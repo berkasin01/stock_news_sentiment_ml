@@ -13,23 +13,24 @@ Zero nulls, fully cleaned
 ## Data Pipeline
 The scraping system in getnews.py does the following:
 
-Pulls up to 1000 news articles per API call from Polygon.io with pagination
-Loops backwards through time with rate limiting (15s between calls) to collect up to 4 years of history per ticker
-Extracts headline, date, sentiment label and sentiment reasoning for each article
-Deduplicates and cleans the data
-Aggregates daily sentiment scores per ticker, weighting negative news 3x heavier than positive
-Fills in missing dates (weekends, holidays) with neutral scores
-Exports everything to structured CSVs
+- Pulls up to 1000 news articles per API call from Polygon.io with pagination
+- Loops backwards through time with rate limiting (15s between calls) to collect up to 4 years of history per ticker
+- Extracts headline, date, sentiment label and sentiment reasoning for each article
+- Deduplicates and cleans the data
+- Aggregates daily sentiment scores per ticker, weighting negative news 3x heavier than positive
+- Fills in missing dates (weekends, holidays) with neutral scores
+- Exports everything to structured CSVs
 
 ## Baseline Model
+
 ## CountVectorizer + Logistic Regression
 
-Bag of words approach using scikit learn CountVectorizer (max 4441 features)
-Text preprocessing: regex cleaning, lowercasing, stop word removal (kept sentiment words like "not", "never", "no"), lemmatization
-Combined news title + sentiment reasoning as input text
-Logistic Regression with L2 penalty
-80/20 train test split
-Accuracy: ~96%
+- Bag of words approach using scikit learn CountVectorizer (max 4441 features)
+- Text preprocessing: regex cleaning, lowercasing, stop word removal (kept sentiment words like "not", "never", "no"), lemmatization
+- Combined news title + sentiment reasoning as input text
+- Logistic Regression with L2 penalty
+- 80/20 train test split
+- Accuracy: ~96%
 
 ## VADER (Rule Based Baseline)
 
@@ -63,6 +64,10 @@ target_company_news/ - target company specific news
 date_n_scores/ - daily sentiment scores per ticker
 ml_rated_news/ - model rated news outputs
 error_analysis.csv - misclassification analysis
+vader_approach.ipynb - VADER sentiment analysis and evaluation
+roberta_approach.ipynb - RoBERTa transformer sentiment analysis and evaluation
+vader_confusion_matrix.png - VADER confusion matrix visualisation
+roberta_confusion_matrix.png - RoBERTa confusion matrix visualisation
 
 ## Built With
 
@@ -71,9 +76,11 @@ Polygon.io API for news data
 
 ## What I Learned
 
-Building a full data pipeline from API to model, not just downloading a Kaggle CSV
-Rate limiting and pagination for large scale API scraping
-Stop word removal needs to be done carefully for sentiment tasks, removing words like "not" destroys meaning
-Weighting negative sentiment heavier than positive gives more useful daily scores for financial analysis
-96% accuracy sounds great but the class imbalance (72/28 split) means the model could be leaning on the majority class, worth investigating further with precision/recall per class
-Rule based sentiment models like VADER perform poorly on financial text (61%) because financial language uses different patterns than social media
+- Building a full data pipeline from API to model, not just downloading a Kaggle CSV
+- Rate limiting and pagination for large scale API scraping
+- Stop word removal needs to be done carefully for sentiment tasks, removing words like "not" destroys meaning
+- Weighting negative sentiment heavier than positive gives more useful daily scores for financial analysis
+- 96% accuracy sounds great but the class imbalance (72/28 split) means the model could be leaning on the majority class, worth investigating further with precision/recall per class
+- Rule based sentiment models like VADER perform poorly on financial text (61%) because financial language uses different patterns than social media
+- Pretrained transformer models like RoBERTa (83%) massively outperform rule based models like VADER (61%) on financial text, even when neither was trained specifically on financial data
+- The gap between RoBERTa (83%) and the logistic regression baseline (96%) is partly because the baseline used sentiment reasoning text which essentially leaks the answer
