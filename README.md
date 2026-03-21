@@ -40,10 +40,16 @@ Accuracy: ~96%
 - Recall: 0.78 (negative), 0.53 (positive)
 - VADER struggles with financial language because it was built for social media text, not news headlines
 
-## Planned Models
+  ## RoBERTa (Pretrained Transformer)
 
-VADER (rule based sentiment baseline)
-RoBERTa (pretrained transformer)
+- cardiffnlp/twitter-roberta-base-sentiment applied to News_Title only
+- Predicted positive if positive score > negative score
+- Accuracy: 83%
+- Precision: 0.70 (negative), 0.91 (positive)
+- Recall: 0.82 (negative), 0.83 (positive)
+- Massive improvement over VADER, but still trained on Twitter data not financial news
+
+## Planned Models
 LSTM (sequential deep learning approach)
 
 Goal is to compare all approaches on the same dataset and document which performs best on financial news specifically.
