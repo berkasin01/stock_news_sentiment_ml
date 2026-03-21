@@ -1,4 +1,4 @@
-Stock News Sentiment ML
+## Stock News Sentiment ML
 
 Predicts whether financial news headlines are positive or negative using machine learning. Includes a full data scraping pipeline that collects labelled news from the Polygon.io API across 37 major tickers and ETFs.
 Dataset
@@ -10,7 +10,7 @@ Date range: mid 2024 to March 2026
 Class distribution: ~72% positive, ~28% negative
 Zero nulls, fully cleaned
 
-Data Pipeline
+## Data Pipeline
 The scraping system in getnews.py does the following:
 
 Pulls up to 1000 news articles per API call from Polygon.io with pagination
@@ -21,8 +21,8 @@ Aggregates daily sentiment scores per ticker, weighting negative news 3x heavier
 Fills in missing dates (weekends, holidays) with neutral scores
 Exports everything to structured CSVs
 
-Baseline Model
-**CountVectorizer + Logistic Regression**
+## Baseline Model
+## CountVectorizer + Logistic Regression
 
 Bag of words approach using scikit learn CountVectorizer (max 4441 features)
 Text preprocessing: regex cleaning, lowercasing, stop word removal (kept sentiment words like "not", "never", "no"), lemmatization
@@ -40,7 +40,7 @@ Accuracy: ~96%
 - Recall: 0.78 (negative), 0.53 (positive)
 - VADER struggles with financial language because it was built for social media text, not news headlines
 
-Planned Models
+## Planned Models
 
 VADER (rule based sentiment baseline)
 RoBERTa (pretrained transformer)
@@ -58,12 +58,12 @@ date_n_scores/ - daily sentiment scores per ticker
 ml_rated_news/ - model rated news outputs
 error_analysis.csv - misclassification analysis
 
-Built With
+## Built With
 
 Python, pandas, NumPy, scikit learn, NLTK, requests
 Polygon.io API for news data
 
-What I Learned
+## What I Learned
 
 Building a full data pipeline from API to model, not just downloading a Kaggle CSV
 Rate limiting and pagination for large scale API scraping
