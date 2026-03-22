@@ -49,11 +49,29 @@ The scraping system in getnews.py does the following:
 - Precision: 0.70 (negative), 0.91 (positive)
 - Recall: 0.82 (negative), 0.83 (positive)
 - Massive improvement over VADER, but still trained on Twitter data not financial news
+- 
+## LSTM (Trained on Financial Headlines)
 
-## Planned Models
-LSTM (sequential deep learning approach)
+- Keras Sequential model: Embedding (GloVe 100d, trainable) + LSTM(128) + Dropout(0.3) + Dense(1, sigmoid)
+- Trained on News_Title only, preprocessed with lowercase and special character removal, no stop word removal
+- Padded sequences to maxlen=20 (matching actual headline length, not an arbitrary 100)
+- Class weights applied to handle 72/28 imbalance
+- Early stopping with patience=3
+- Accuracy: 89%
+- Precision: 0.88 (negative), 0.89 (positive)
+- Recall: 0.75 (negative), 0.95 (positive)
+- Beat RoBERTa because it learned financial language specifically rather than generalising from Twitter
 
 Goal is to compare all approaches on the same dataset and document which performs best on financial news specifically.
+## Model Comparison
+
+| Model | Accuracy | Type | Input |
+|-------|----------|------|-------|
+| Logistic Regression | 96% | Trained | Title + Reasoning |
+| LSTM | 89% | Trained | Title only |
+| RoBERTa | 83% | Pretrained | Title only |
+| VADER | 61% | Rule based | Title only |
+
 Project Structure
 
 getnews.py - full scraping and data pipeline
@@ -68,6 +86,8 @@ vader_approach.ipynb - VADER sentiment analysis and evaluation
 roberta_approach.ipynb - RoBERTa transformer sentiment analysis and evaluation
 vader_confusion_matrix.png - VADER confusion matrix visualisation
 roberta_confusion_matrix.png - RoBERTa confusion matrix visualisation
+LSTM_approach.ipynb - LSTM model training and evaluation
+lstm_confusion_matrix.png - LSTM confusion matrix visualisation
 
 ## Built With
 
@@ -84,3 +104,6 @@ Polygon.io API for news data
 - Rule based sentiment models like VADER perform poorly on financial text (61%) because financial language uses different patterns than social media
 - Pretrained transformer models like RoBERTa (83%) massively outperform rule based models like VADER (61%) on financial text, even when neither was trained specifically on financial data
 - The gap between RoBERTa (83%) and the logistic regression baseline (96%) is partly because the baseline used sentiment reasoning text which essentially leaks the answer
+- A trained LSTM (89%) outperformed a pretrained transformer (RoBERTa 83%) on domain specific financial text because it learned the patterns of financial headlines directly rather than relying on general social media language
+- Padding sequence length matters hugely, setting maxlen=100 when headlines are only 10-15 words meant the LSTM was reading 90% zeros and could not learn, dropping to maxlen=20 fixed it immediately (67% to 89%)
+- Class imbalance must be handled explicitly, without class weights the LSTM just predicted the majority class for every input
