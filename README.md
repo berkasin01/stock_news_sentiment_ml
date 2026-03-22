@@ -49,7 +49,7 @@ The scraping system in getnews.py does the following:
 - Precision: 0.70 (negative), 0.91 (positive)
 - Recall: 0.82 (negative), 0.83 (positive)
 - Massive improvement over VADER, but still trained on Twitter data not financial news
-- 
+  
 ## LSTM (Trained on Financial Headlines)
 
 - Keras Sequential model: Embedding (GloVe 100d, trainable) + LSTM(128) + Dropout(0.3) + Dense(1, sigmoid)
